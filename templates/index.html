@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>INF-2310 OPENID Authentication Assignment - Antonio Luque</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .centered {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+
+  {% if user %}
+  <!-- Content for authenticated users-->
+  <div class="centered text-center">
+    <h1>Welcome {{ user.get("name") }}!</h1>
+    <!-- <h2>Your email is {{ user.get("e-mail") }}.</h2> -->
+    <ul class="list-unstyled d-flex justify-content-center gap-2">
+      <!-- {% if config.get("ENDPOINT") %}
+      <li><a href='/call_downstream_api'>Call a downstream API</a></li>
+      {% endif %} -->
+      <li><a href="/users" class="btn btn-success">Show users</a></li>
+      <li><a href="/profile" class="btn btn-info">Profile</a></li>
+      <li><a href="/logout" class="btn btn-danger">Logout</a></li>
+    </ul>
+  </div>
+  {% else %}
+  <!-- Content for unauthenticated users-->
+  <div class="centered text-center">
+    <h2>Welcome to my Web App!</h2>
+    <ul class="list-unstyled">
+      <li><a href='{{ auth_uri }}' class="btn btn-primary">Sign In</a></li>
+    </ul>
+  </div>
+  {% endif %}
+</body>
+
+</html>
+
+
+
+<!-- <body>
+  <h1>Microsoft Identity Python Web App</h1>
+  <h2>Welcome {{ user.get("name") }}!</h2>
+
+  <ul>
+    {% if config.get("ENDPOINT") %}
+    <li><a href='/call_downstream_api'>Call a downstream API</a></li>
+    {% endif %}
+
+    {% if config.get("B2C_PROFILE_AUTHORITY") %}
+    <li><a
+        href='{{Auth(session={}, authority=config["B2C_PROFILE_AUTHORITY"], client_id=config["CLIENT_ID"]).log_in(redirect_uri=url_for("auth_response", _external=True))["auth_uri"]}}'>Edit
+        Profile</a></li>
+    {% endif %}
+
+    <li><a href="/logout">Logout</a></li>
+  </ul>
+
+  <hr>
+  <footer style="text-align: right">Microsoft identity platform Web App Sample {{ version }}</footer>
+</body>
+
+</html> -->

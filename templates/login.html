@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Login Required Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <style>
+    .centered {
+      position: fixed;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      width: 100%;
+    }
+  </style>
+</head>
+
+<body>
+  <div class="centered text-center">
+    <h1>Access Denied!</h1>
+    <p>You must be logged in to view this page.</p>
+    {% if user_code %}
+    <ol>
+      <li>To sign in, type <b>{{ user_code }}</b> into
+        <a href='{{ auth_uri }}' target=_blank>{{ auth_uri }}</a>
+        to authenticate.
+      </li>
+      <li>And then <a href="{{ url_for('auth_response') }}">proceed</a>.</li>
+    </ol>
+    {% else %}
+    <a href="{{ auth_uri }}" class="btn btn-primary">Sign In</a>
+    {% endif %}
+    <!-- <a href="{{ url_for('auth_response') }}" class="btn btn-primary">Log In</a> -->
+  </div>
+
+</body>
+
+</html>

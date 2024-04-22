@@ -1,0 +1,183 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Profile</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        .input-group {
+            margin-bottom: 1rem;
+            /* Spacing between input groups */
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container mt-5">
+        <h1 class="mb-4">Update Your Profile</h1>
+
+        {% if result != None %}
+        <div class="alert {% if result.ok %}alert-success{% else %}alert-danger{% endif %}" role="alert">
+            {% if result.ok %}
+            Profile stored!
+            {% else %}
+            <div>{{ result.text }}</div>
+            {% endif %}
+        </div>
+        {% endif %}
+
+        <form method="post">
+            <div class="mb-3">
+                <label for="id" class="form-label fw-bold">User ID</label>
+                <input type="text" name="id" id="id" class="form-control" value="{{user.id}}" />
+            </div>
+
+            <div class="mb-3">
+                <label for="displayName" class="form-label fw-bold">Display Name</label>
+                <input type="text" name="displayName" id="displayName" class="form-control"
+                    value="{{user.displayName}}" />
+            </div>
+
+            <div class="mb-3">
+                <label for="givenName" class="form-label fw-bold">Given Name</label>
+                <input type="text" name="givenName" id="givenName" class="form-control" value="{{user.givenName}}" />
+            </div>
+
+            <div class="mb-3">
+                <label for="surname" class="form-label fw-bold">Surname</label>
+                <input type="text" name="surname" id="surname" class="form-control" value="{{user.surname}}" />
+            </div>
+
+            <div class="mb-3">
+                <label for="mobilePhone" class="form-label fw-bold">Mobile Phone</label>
+                <input type="text" name="mobilePhone" id="mobilePhone" class="form-control" value="{{user.mobilePhone}}"
+                    disabled />
+                <small class="form-text text-muted">This field cannot be modified.</small>
+            </div>
+
+            <!-- New fields -->
+            <div class="mb-3">
+                <label for="businessPhones" class="form-label fw-bold">Business Phone</label>
+                <input type="text" name="businessPhones" id="businessPhones" class="form-control"
+                    value="{{ user.businessPhones[0] if user.businessPhones else '' }}"
+                    placeholder="Enter business phone number with country code, e.g., +34601020233">
+            </div>
+
+            <div class="mb-3">
+                <label for="mail" class="form-label fw-bold">Mail</label>
+                <input type="text" name="mail" id="mail" class="form-control" value="{{ user.mail }}" required
+                    placeholder="e.g., jeff@contoso.com" />
+            </div>
+
+            <div class="mb-3">
+                <label for="otherMails" class="form-label fw-bold">Other Mails</label>
+                <input type="text" name="otherMails" id="otherMails" class="form-control"
+                    placeholder="e.g., bob@contoso.com, robert@fabrikam.com" value="{{ user.otherMails | join(', ') }}"
+                    disabled />
+                <small class="form-text text-muted">This field cannot be modified.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="birthday" class="form-label fw-bold">Birthday</label>
+                <input type="date" name="birthday" id="birthday" class="form-control" value="{{user.birthday}}"
+                    disabled />
+                <small class="form-text text-muted">This field cannot be modified.</small>
+            </div>
+
+            <div class="mb-3">
+                <label for="city" class="form-label fw-bold">City</label>
+                <input type="text" name="city" id="city" class="form-control" value="{{user.city}}" />
+            </div>
+
+            <div class="mb-3">
+                <label for="country" class="form-label fw-bold">Country</label>
+                <select name="country" id="country" class="form-control">
+                    <option value="">Select a Country</option>
+                    <option value="US" {% if user.country=='US' %}selected{% endif %}>United States</option>
+                    <option value="UK" {% if user.country=='UK' %}selected{% endif %}>United Kingdom</option>
+                    <option value="CA" {% if user.country=='CA' %}selected{% endif %}>Canada</option>
+                    <option value="DE" {% if user.country=='DE' %}selected{% endif %}>Germany</option>
+                    <option value="FR" {% if user.country=='FR' %}selected{% endif %}>France</option>
+                    <option value="ES" {% if user.country=='ES' %}selected{% endif %}>Spain</option>
+                    <option value="IT" {% if user.country=='IT' %}selected{% endif %}>Italy</option>
+                    <option value="JP" {% if user.country=='JP' %}selected{% endif %}>Japan</option>
+                    <option value="CN" {% if user.country=='CN' %}selected{% endif %}>China</option>
+                    <option value="IN" {% if user.country=='IN' %}selected{% endif %}>India</option>
+                    <option value="BR" {% if user.country=='BR' %}selected{% endif %}>Brazil</option>
+                    <option value="RU" {% if user.country=='RU' %}selected{% endif %}>Russia</option>
+                    <option value="AU" {% if user.country=='AU' %}selected{% endif %}>Australia</option>
+                    <option value="ZA" {% if user.country=='ZA' %}selected{% endif %}>South Africa</option>
+                    <option value="SE" {% if user.country=='SE' %}selected{% endif %}>Sweden</option>
+                    <option value="NO" {% if user.country=='NO' %}selected{% endif %}>Norway</option>
+                </select>
+            </div>
+
+
+            <div class="mb-3">
+                <label for="preferredLanguage" class="form-label fw-bold">Preferred Language</label>
+                <select name="preferredLanguage" id="preferredLanguage" class="form-control">
+                    <option value="">Select a Language</option>
+                    <option value="en-US" {% if user.preferredLanguage=='en-US' %}selected{% endif %}>English (United
+                        States)</option>
+                    <option value="en-GB" {% if user.preferredLanguage=='en-GB' %}selected{% endif %}>English (United
+                        Kingdom)</option>
+                    <option value="es-ES" {% if user.preferredLanguage=='es-ES' %}selected{% endif %}>Spanish (Spain)
+                    </option>
+                    <option value="es-MX" {% if user.preferredLanguage=='es-MX' %}selected{% endif %}>Spanish (Mexico)
+                    </option>
+                    <option value="fr-FR" {% if user.preferredLanguage=='fr-FR' %}selected{% endif %}>French (France)
+                    </option>
+                    <option value="fr-CA" {% if user.preferredLanguage=='fr-CA' %}selected{% endif %}>French (Canada)
+                    </option>
+                    <option value="de-DE" {% if user.preferredLanguage=='de-DE' %}selected{% endif %}>German (Germany)
+                    </option>
+                    <option value="zh-CN" {% if user.preferredLanguage=='zh-CN' %}selected{% endif %}>Chinese
+                        (Simplified, China)</option>
+                    <option value="zh-TW" {% if user.preferredLanguage=='zh-TW' %}selected{% endif %}>Chinese
+                        (Traditional, Taiwan)</option>
+                    <option value="ja-JP" {% if user.preferredLanguage=='ja-JP' %}selected{% endif %}>Japanese (Japan)
+                    </option>
+                    <option value="ko-KR" {% if user.preferredLanguage=='ko-KR' %}selected{% endif %}>Korean (South
+                        Korea)</option>
+                    <option value="ru-RU" {% if user.preferredLanguage=='ru-RU' %}selected{% endif %}>Russian (Russia)
+                    </option>
+                    <option value="ar-SA" {% if user.preferredLanguage=='ar-SA' %}selected{% endif %}>Arabic (Saudi
+                        Arabia)</option>
+                    <option value="it-IT" {% if user.preferredLanguage=='it-IT' %}selected{% endif %}>Italian (Italy)
+                    </option>
+                    <option value="pt-PT" {% if user.preferredLanguage=='pt-PT' %}selected{% endif %}>Portuguese
+                        (Portugal)</option>
+                    <option value="pt-BR" {% if user.preferredLanguage=='pt-BR' %}selected{% endif %}>Portuguese
+                        (Brazil)</option>
+                    <option value="nl-NL" {% if user.preferredLanguage=='nl-NL' %}selected{% endif %}>Dutch
+                        (Netherlands)</option>
+                    <option value="sv-SE" {% if user.preferredLanguage=='sv-SE' %}selected{% endif %}>Swedish (Sweden)
+                    </option>
+                    <option value="pl-PL" {% if user.preferredLanguage=='pl-PL' %}selected{% endif %}>Polish (Poland)
+                    </option>
+                    <option value="tr-TR" {% if user.preferredLanguage=='tr-TR' %}selected{% endif %}>Turkish (Turkey)
+                    </option>
+                    <option value="he-IL" {% if user.preferredLanguage=='he-IL' %}selected{% endif %}>Hebrew (Israel)
+                    </option>
+                    <option value="hi-IN" {% if user.preferredLanguage=='hi-IN' %}selected{% endif %}>Hindi (India)
+                    </option>
+                    <option value="nb-NO" {% if user.preferredLanguage=='nb-NO' %}selected{% endif %}>Norwegian Bokmål
+                        (Norway)</option>
+                    <option value="nn-NO" {% if user.preferredLanguage=='nn-NO' %}selected{% endif %}>Norwegian Nynorsk
+                        (Norway)</option>
+                </select>
+            </div>
+
+
+
+            <button type="submit" class="btn btn-primary mt-4">Submit</button>
+        </form>
+
+        <div class="mt-4">
+            <a href="/" class="btn btn-secondary">Back</a>
+        </div>
+    </div>
+</body>
+
+</html>
