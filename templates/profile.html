@@ -51,9 +51,8 @@
 
             <div class="mb-3">
                 <label for="mobilePhone" class="form-label fw-bold">Mobile Phone</label>
-                <input type="text" name="mobilePhone" id="mobilePhone" class="form-control" value="{{user.mobilePhone}}"
-                    disabled />
-                <small class="form-text text-muted">This field cannot be modified.</small>
+                <input type="text" name="mobilePhone" id="mobilePhone" class="form-control"
+                    value="{{user.mobilePhone}}" />
             </div>
 
             <!-- New fields -->
@@ -63,12 +62,12 @@
                     value="{{ user.businessPhones[0] if user.businessPhones else '' }}"
                     placeholder="Enter business phone number with country code, e.g., +34601020233">
             </div>
-
+            <!-- 
             <div class="mb-3">
                 <label for="mail" class="form-label fw-bold">Mail</label>
                 <input type="text" name="mail" id="mail" class="form-control" value="{{ user.mail }}" required
                     placeholder="e.g., jeff@contoso.com" />
-            </div>
+            </div> -->
 
             <div class="mb-3">
                 <label for="otherMails" class="form-label fw-bold">Other Mails</label>
@@ -111,6 +110,7 @@
                     <option value="SE" {% if user.country=='SE' %}selected{% endif %}>Sweden</option>
                     <option value="NO" {% if user.country=='NO' %}selected{% endif %}>Norway</option>
                 </select>
+
             </div>
 
 

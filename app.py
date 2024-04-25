@@ -4,8 +4,6 @@ from flask import Flask, redirect, render_template, request, session, url_for, f
 from flask_session import Session
 from datetime import datetime
 import app_config
-import logging
-import json
 import re
 import phonenumbers
 
@@ -15,7 +13,6 @@ app = Flask(__name__)
 app.config.from_object(app_config)
 assert app.config["REDIRECT_PATH"] != "/", "REDIRECT_PATH must not be /"
 Session(app)
-logging.basicConfig(level=logging.DEBUG)
 
 # This section is needed for url_for("foo", _external=True) to automatically
 # generate http scheme when this sample is running on localhost,
@@ -78,7 +75,6 @@ def get_profile():
 
 @app.route("/profile", methods=["POST"])
 def post_profile():
-    logging.debug("Received POST request with form data: %s", request.form)
     # Shows error message for unauthenticated users when accessing restricted pages & content
     if not auth.get_user():
         return redirect(url_for("login"))
@@ -105,7 +101,6 @@ def post_profile():
     if not mail or not re.match(r"[^@]+@[^@]+\.[^@]+", mail):
         # Handle error: redirect, flash a message, or return an error response
         flash('Invalid email address.', 'error')
-        return redirect(url_for('profile'))  # Assuming there's a route to edit the profile
 
     raw_phone = request.form.get('businessPhones', '').strip()
 
@@ -129,38 +124,61 @@ def post_profile():
 
     # ~~~~      ~~~~
 
+    # user_data_to_update = {
+    #     "displayName": request.form.get("displayName"),
+    #     "givenName": request.form.get("givenName") or None,  # Handle 'None' strings properly
+    #     "surname": request.form.get("surname") or None,
+    #     "mobilePhone": request.form.get("mobilePhone") or None,
+    #     "businessPhones": business_phones,
+    #     "mail": mail,
+    #     "otherMails": other_mails,
+    #     "birthday": formatted_birthday,
+    #     "city": request.form.get("city") or None,
+    #     "country": request.form.get("country"),
+    #     "preferredLanguage": request.form.get("preferredLanguage") or None
+    # }
+
+     # Validate and sanitize the user ID
+    user_id = request.form.get("id")
+    if not user_id:
+        return "Invalid user ID", 400
+
+    # Prepare headers for HTTP request
+    headers = {'Authorization': 'Bearer ' + token['access_token']}
+    
+    # Prepare the JSON payload from form data, ensuring keys match expected API parameters
     user_data_to_update = {
-        "displayName": request.form.get("displayName"),
-        "givenName": request.form.get("givenName") or None,  # Handle 'None' strings properly
-        "surname": request.form.get("surname") or None,
         "mobilePhone": request.form.get("mobilePhone") or None,
         "businessPhones": business_phones,
-        "mail": mail,
+        "preferredLanguage": request.form.get("preferredLanguage") or None,
         "otherMails": other_mails,
-        "birthday": formatted_birthday,
-        "city": request.form.get("city") or None,
-        "country": request.form.get("country"),
-        "preferredLanguage": request.form.get("preferredLanguage") or None
     }
 
     # If user is authenticated and token retrieval is succesful We proceed with the request
     result = requests.patch(
-        # 'https://graph.microsoft.com/v1.0/users/' + request.form.get("id")
-        'https://graph.microsoft.com/v1.0/users/{id | userPrincipalName}',
-        headers={'Authorization': 'Bearer ' + token['access_token']},
-        # json = request.form.to_dict()
+        f'https://graph.microsoft.com/v1.0/users/{user_id}',
+        headers=headers,
         json=user_data_to_update
+        # 'https://graph.microsoft.com/v1.0/users/' + request.form.get("id"),
+        # headers={'Authorization': 'Bearer ' + token['access_token']},
+        # json = request.form.to_dict()
+        # json=user_data_to_update
     )
     if result.status_code != 200:
-        logging.error("Failed to update profile: %s", result.text)
-    # TODO: add credentials to the http request.
-    profile = requests.get(
+        return f"Error updating profile: {result.text}", result.status_code
+
+    profile_response = requests.get(
         'https://graph.microsoft.com/v1.0/me',
-        headers={'Authorization': 'Bearer ' + token['access_token']},
+        headers=headers
     )
+
+    # Handle possible GET request failure
+    if profile_response.status_code != 200:
+        return f"Error fetching profile: {profile_response.text}", profile_response.status_code
+
     return render_template('profile.html',
-                           user=profile.json(),
-                           result=result)
+                           user=profile_response.json(),
+                           result=result.json())
 
 @app.route("/logout")
 def logout():
